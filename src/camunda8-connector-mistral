@@ -1,0 +1,288 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "camunda8-connector-mistral",
+  "id": "814b6553-bce6-4057-899f-e47a38491d41",
+  "version": 1736090886090,
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "server",
+      "label": "Server"
+    },
+    {
+      "id": "operation",
+      "label": "Operation"
+    },
+    {
+      "id": "authentication",
+      "label": "Authentication"
+    },
+    {
+      "id": "parameters",
+      "label": "Parameters"
+    },
+    {
+      "id": "requestBody",
+      "label": "Request body"
+    },
+    {
+      "id": "url",
+      "label": "URL"
+    },
+    {
+      "id": "output",
+      "label": "Output mapping"
+    },
+    {
+      "id": "error",
+      "label": "Error handling"
+    },
+    {
+      "id": "retries",
+      "label": "Retries"
+    }
+  ],
+  "properties": [
+    {
+      "value": "io.camunda:http-json:1",
+      "binding": {
+        "property": "type",
+        "type": "zeebe:taskDefinition"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "baseUrl",
+      "value": "=\"\"",
+      "group": "server",
+      "binding": {
+        "name": "baseUrl",
+        "type": "zeebe:input"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "operationId",
+      "value": "test__chat_completion_test",
+      "group": "operation",
+      "binding": {
+        "name": "operationId",
+        "type": "zeebe:input"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "test__chat_completion_test_header_Content-Type",
+      "label": "Content- type",
+      "description": "",
+      "optional": true,
+      "value": "application/json",
+      "feel": "optional",
+      "group": "parameters",
+      "binding": {
+        "name": "Content-Type",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "test__chat_completion_test_header_Authorization",
+      "label": "Authorization",
+      "description": "",
+      "optional": true,
+      "value": "Bearer MISTRAL_API_KEY",
+      "feel": "optional",
+      "group": "parameters",
+      "binding": {
+        "name": "Authorization",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "test__chat_completion_test_header_Accept",
+      "label": "Accept",
+      "description": "",
+      "optional": true,
+      "value": "application/json",
+      "feel": "optional",
+      "group": "parameters",
+      "binding": {
+        "name": "Accept",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "test__chat_completion_test_$path",
+      "value": "=\"https://api.mistral.ai/v1/chat/completions\"",
+      "group": "parameters",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "test__chat_completion_test_$headers",
+      "value": "={Authorization: Authorization, Accept: Accept, Content-Type: Content-Type}",
+      "group": "parameters",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "test__chat_completion_test_$queryParameters",
+      "value": "={}",
+      "group": "parameters",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "test__chat_completion_test_$method",
+      "value": "POST",
+      "group": "parameters",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "test__chat_completion_test_body",
+      "value": "={\n    \"model\": \"mistral-large-latest\",\n    \"messages\": [\n        {\n            \"role\": \"user\",\n            \"content\": \"Who is the most renowned French painter?\"\n        }\n    ]\n}",
+      "feel": "required",
+      "group": "requestBody",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "test__chat_completion_test",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "url",
+      "value": "= baseUrl + operationPath",
+      "group": "url",
+      "binding": {
+        "name": "url",
+        "type": "zeebe:input"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "resultVariable",
+      "label": "Result variable",
+      "description": "Name of variable to store the response in",
+      "group": "output",
+      "binding": {
+        "key": "resultVariable",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "String"
+    },
+    {
+      "id": "resultExpression",
+      "label": "Result expression",
+      "description": "Expression to map the response into process variables",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "errorExpression",
+      "label": "Error expression",
+      "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+      "feel": "required",
+      "group": "error",
+      "binding": {
+        "key": "errorExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "retryCount",
+      "label": "Retries",
+      "description": "Number of retries",
+      "value": "3",
+      "feel": "optional",
+      "group": "retries",
+      "binding": {
+        "property": "retries",
+        "type": "zeebe:taskDefinition"
+      },
+      "type": "String"
+    },
+    {
+      "id": "retryBackoff",
+      "label": "Retry backoff",
+      "description": "ISO-8601 duration to wait between retries",
+      "value": "PT0S",
+      "feel": "optional",
+      "group": "retries",
+      "binding": {
+        "key": "retryBackoff",
+        "type": "zeebe:taskHeader"
+      },
+      "type": "String"
+    }
+  ]
+}
