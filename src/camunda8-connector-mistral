@@ -1,8 +1,8 @@
 {
     "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-    "name": "mistral",
+    "name": "Mistral",
     "id": "065af79b-b213-4bed-b92d-e40526309369",
-    "version": 1736165641835,
+    "version": 1736172364759,
     "description": "Invoke Mistral's AI capabilities directly within Camunda workflows",
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/rest/",
     "category": {
@@ -25,8 +25,8 @@
         "label": "Operation"
       },
       {
-        "id": "endpoint",
-        "label": "HTTP endpoint"
+        "id": "parameters",
+        "label": "Parameters"
       },
       {
         "id": "timeout",
@@ -124,6 +124,51 @@
         ]
       },
       {
+        "id": "mistralModelId",
+        "label": "Model",
+        "description": "ID of the model to use. See <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\">Model overview</a> for model descriptions",
+        "placeholder": "mistral-large-latest",
+        "group": "operation",
+        "binding": {
+          "name": "mistralModelId",
+          "type": "zeebe:input"
+        },
+        "type": "String"
+      },
+      {
+        "id": "messages",
+        "label": "Messages",
+        "description": "The prompt(s) to generate completions for.",
+        "placeholder": "mistral-large-latest",
+        "group": "operation",
+        "binding": {
+          "name": "messages",
+          "type": "zeebe:input"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "responseFormat",
+        "label": "Response Format",
+        "value": "text",
+        "group": "operation",
+        "binding": {
+          "name": "responseFormat",
+          "type": "zeebe:input"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Text",
+            "value": "text"
+          },
+          {
+            "name": "JSON Oject",
+            "value": "json_object"
+          }
+        ]
+      },
+      {
         "id": "connectionTimeoutInSeconds",
         "label": "Connection timeout in seconds",
         "description": "Defines the connection timeout in seconds, or 0 for an infinite timeout",
@@ -164,29 +209,6 @@
           "type": "zeebe:input"
         },
         "type": "String"
-      },
-      {
-        "id": "body",
-        "label": "Request body",
-        "description": "Payload to send with the request",
-        "optional": true,
-        "feel": "optional",
-        "group": "payload",
-        "binding": {
-          "name": "body",
-          "type": "zeebe:input"
-        },
-        "condition": {
-          "property": "method",
-          "oneOf": [
-            "POST",
-            "PUT",
-            "PATCH"
-          ],
-          "type": "simple"
-        },
-        "type": "Text",
-        "value": "{\n    \"model\": \"mistral-large-latest\",\n    \"messages\": [\n     {\n        \"role\": \"user\",\n        \"content\": \"Liste toute les villes de plus d'un million d'habitant en france? Retourne le nom et la région in JSON format\"\n      }\n    ],\n    \"response_format\": {\"type\": \"json_object\"}\n  }"
       },
       {
         "id": "resultVariable",
@@ -265,7 +287,16 @@
         },
         "type": "Hidden"
       },
-          {
+      {
+        "id": "body",
+        "binding": {
+          "name": "body",
+          "type": "zeebe:input"
+        },
+        "type": "Hidden",
+        "value": "={model: mistralModelId, messages: [{role: \"user\", content: messages}], response_format: {type: responseFormat}}"
+      },
+      {
         "id": "method",
         "value": "POST",
         "binding": {
@@ -274,7 +305,7 @@
         },
         "type": "Hidden"
       },
-        {
+      {
         "id": "operation__text_generation__headers",
         "value": "={Authorization: \"Bearer \" + authorization, Accept: \"application/json\", Content-Type: \"application/json\"}",
         "binding": {
