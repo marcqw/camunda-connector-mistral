@@ -92,20 +92,12 @@
     },
     {
       "id": "apiVersion",
-      "label": "API Version",
       "value": "v1",
-      "group": "server",
       "binding": {
         "name": "apiVersion",
         "type": "zeebe:input"
       },
-      "type": "Dropdown",
-      "choices": [
-        {
-          "name": "1",
-          "value": "v1"
-        }
-      ]
+      "type": "Hidden"
     },
     {
       "id": "operationId",
