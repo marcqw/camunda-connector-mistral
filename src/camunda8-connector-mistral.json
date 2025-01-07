@@ -109,7 +109,7 @@
     },
     {
       "id": "operationId",
-      "value": "operation__text_generation",
+      "value": "operation__text_generation_simple",
       "group": "operation",
       "binding": {
         "name": "operationId",
@@ -118,8 +118,8 @@
       "type": "Dropdown",
       "choices": [
         {
-          "name": "Text Generation",
-          "value": "operation__text_generation"
+          "name": "Text Generation (Simple)",
+          "value": "operation__text_generation_simple"
         }
       ]
     },
@@ -282,7 +282,9 @@
       },
       "condition": {
         "property": "operationId",
-        "equals": "operation__text_generation",
+        "oneOf": [
+          "operation__text_generation_simple"
+        ],
         "type": "simple"
       },
       "type": "Hidden"
