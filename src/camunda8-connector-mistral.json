@@ -212,7 +212,7 @@
         "type": "zeebe:taskHeader"
       },
       "type": "String",
-      "value": "result"
+      "value": "fullMistralResult"
     },
     {
       "id": "resultExpression",
@@ -224,6 +224,7 @@
         "key": "resultExpression",
         "type": "zeebe:taskHeader"
       },
+      "value": "{mistralResponse: response.body.choices[1].message.content}",
       "type": "Text"
     },
     {
