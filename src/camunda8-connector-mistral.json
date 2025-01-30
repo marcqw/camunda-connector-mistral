@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
   "name": "Mistral",
   "id": "065af79b-b213-4bed-b92d-e40526309369",
-  "version": 1736172364759,
+  "version": 1738231545669,
   "description": "Invoke Mistral's AI capabilities directly within Camunda workflows",
   "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/rest/",
   "category": {
@@ -112,6 +112,14 @@
         {
           "name": "Text Generation (Simple)",
           "value": "operation__text_generation_simple"
+        },
+        {
+          "name": "Text Moderation",
+          "value": "operation__text_moderation"
+        },
+        {
+          "name": "Vision (Simple)",
+          "value": "operation__vision_simple"
         }
       ]
     },
@@ -131,11 +139,28 @@
       "id": "messages",
       "label": "Messages",
       "description": "The prompt(s) to generate completions for.",
-      "placeholder": "mistral-large-latest",
       "group": "operation",
       "binding": {
         "name": "messages",
         "type": "zeebe:input"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "imageUrl",
+      "label": "Image URL",
+      "description": "Provide the URL of the image to process.",
+      "group": "operation",
+      "binding": {
+        "name": "imageUrl",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__vision_simple"
+        ],
+        "type": "simple"
       },
       "type": "Text"
     },
@@ -147,6 +172,14 @@
       "binding": {
         "name": "responseFormat",
         "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__text_generation_simple",
+          "operation__vision_simple"
+        ],
+        "type": "simple"
       },
       "type": "Dropdown",
       "choices": [
@@ -276,7 +309,25 @@
       "condition": {
         "property": "operationId",
         "oneOf": [
-          "operation__text_generation_simple"
+          "operation__text_generation_simple",
+          "operation__vision_simple"
+        ],
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "operation__text_moderation__endpoint",
+      "value": "=\"/moderations\"",
+      "group": "parameters",
+      "binding": {
+        "name": "operationEndpoint",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__moderation_simple"
         ],
         "type": "simple"
       },
@@ -288,8 +339,47 @@
         "name": "body",
         "type": "zeebe:input"
       },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__text_generation_simple"
+        ],
+        "type": "simple"
+      },
       "type": "Hidden",
       "value": "={model: mistralModelId, messages: [{role: \"user\", content: messages}], response_format: {type: responseFormat}}"
+    },
+    {
+      "id": "body",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__text_moderation"
+        ],
+        "type": "simple"
+      },
+      "type": "Hidden",
+      "value": "={model: mistralModelId, input: [messages]}"
+    },
+    {
+      "id": "body",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "operation__vision_simple"
+        ],
+        "type": "simple"
+      },
+      "type": "Hidden",
+      "value": "={\n    \"model\": mistralModelId,\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": [\n          {\n            \"type\": \"text\",\n            \"text\": messages\n          },\n          {\n            \"type\": \"image_url\",\n            \"image_url\": imageUrl\n          }\n        ]\n      }\n    ],\n     \"response_format\": {\"type\": responseFormat},\n    \"max_tokens\": 300\n  }"
     },
     {
       "id": "method",
