@@ -379,7 +379,7 @@
         "type": "simple"
       },
       "type": "Hidden",
-      "value": "={\n    \"model\": mistralModelId,\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": [\n          {\n            \"type\": \"text\",\n            \"text\": messages\n          },\n          {\n            \"type\": \"image_url\",\n            \"image_url\": imageUrl\n          }\n        ]\n      }\n    ],\n     \"response_format\": {\"type\": responseFormat},\n    \"max_tokens\": 300\n  }"
+      "value": "={model: mistralModelId, messages: [{role: \"user\", content: [{type: \"text\", text: messages},{type: \"image_url\", image_url: imageUrl}]}], response_format: {type: responseFormat}}"
     },
     {
       "id": "method",
