@@ -2,7 +2,7 @@
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
   "name": "Mistral",
   "id": "065af79b-b213-4bed-b92d-e40526309369",
-  "version": 1738231545669,
+  "version": 1739522836532,
   "description": "Invoke Mistral's AI capabilities directly within Camunda workflows",
   "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/rest/",
   "category": {
@@ -65,14 +65,14 @@
       "constraints": {
         "notEmpty": true
       },
-      "feel": "optionnal",
+      "feel": "optional",
       "group": "server",
       "placeholder": "https://api.mistral.ai/",
       "binding": {
         "name": "baseUrl",
         "type": "zeebe:input"
       },
-      "type": "Text"
+      "type": "String"
     },
     {
       "id": "authorization",
@@ -129,6 +129,7 @@
       "description": "ID of the model to use. See <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\">Model overview</a> for model descriptions",
       "placeholder": "mistral-large-latest",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "name": "mistralModelId",
         "type": "zeebe:input"
@@ -138,9 +139,9 @@
     {
       "id": "messages",
       "label": "Messages",
-      "feel": "optional",
       "description": "The prompt(s) to generate completions for.",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "name": "messages",
         "type": "zeebe:input"
@@ -152,11 +153,11 @@
       "label": "Image URL",
       "description": "Provide the URL of the image to process.",
       "group": "operation",
-      "feel": "optional",
       "binding": {
         "name": "imageUrl",
         "type": "zeebe:input"
       },
+      "feel": "optional",
       "condition": {
         "property": "operationId",
         "oneOf": [
