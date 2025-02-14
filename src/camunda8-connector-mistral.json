@@ -65,7 +65,7 @@
       "constraints": {
         "notEmpty": true
       },
-      "feel": "required",
+      "feel": "optionnal",
       "group": "server",
       "placeholder": "https://api.mistral.ai/",
       "binding": {
@@ -138,6 +138,7 @@
     {
       "id": "messages",
       "label": "Messages",
+      "feel": "optional",
       "description": "The prompt(s) to generate completions for.",
       "group": "operation",
       "binding": {
@@ -151,6 +152,7 @@
       "label": "Image URL",
       "description": "Provide the URL of the image to process.",
       "group": "operation",
+      "feel": "optional",
       "binding": {
         "name": "imageUrl",
         "type": "zeebe:input"
