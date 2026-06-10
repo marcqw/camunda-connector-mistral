@@ -1,10 +1,13 @@
 {
   "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name": "Mistral",
-  "id": "065af79b-b213-4bed-b92d-e40526309369",
-  "version": 1738231545669,
-  "description": "Invoke Mistral's AI capabilities directly within Camunda workflows",
-  "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/rest/",
+  "name": "Mistral AI",
+  "id": "Template_djqxfyi",
+  "version": 2,
+  "description": "Bring Mistral AI into your processes: chat completions, document OCR, embeddings, content moderation, classification, agents and conversations.",
+  "documentationRef": "https://github.com/marcqw/camunda-connector-mistral",
+  "icon": {
+    "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj4KPHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNCIgZmlsbD0iIzFhMWExYSIvPgo8Zz4KPHJlY3QgeD0iMTAiIHk9IjE0IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiNGRkQ4MDAiLz48cmVjdCB4PSI3NCIgeT0iMTQiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGRDgwMCIvPgo8cmVjdCB4PSIxMCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGQUYwMCIvPjxyZWN0IHg9IjI2IiB5PSIzMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjRkZBRjAwIi8+PHJlY3QgeD0iNTgiIHk9IjMwIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiNGRkFGMDAiLz48cmVjdCB4PSI3NCIgeT0iMzAiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGQUYwMCIvPgo8cmVjdCB4PSIxMCIgeT0iNDYiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGODIwNSIvPjxyZWN0IHg9IjQyIiB5PSI0NiIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjRkY4MjA1Ii8+PHJlY3QgeD0iNzQiIHk9IjQ2IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiNGRjgyMDUiLz4KPHJlY3QgeD0iMTAiIHk9IjYyIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiNGQTUwMEYiLz48cmVjdCB4PSI3NCIgeT0iNjIiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZBNTAwRiIvPgo8cmVjdCB4PSIxMCIgeT0iNzgiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbD0iI0UxMDUwMCIvPjxyZWN0IHg9Ijc0IiB5PSI3OCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiBmaWxsPSIjRTEwNTAwIi8+CjwvZz4KPC9zdmc+"
+  },
   "category": {
     "id": "connectors",
     "name": "Connectors"
@@ -15,26 +18,29 @@
   "elementType": {
     "value": "bpmn:ServiceTask"
   },
+  "engines": {
+    "camunda": "^8.5"
+  },
   "groups": [
     {
-      "id": "server",
-      "label": "Mistral Server"
+      "id": "connection",
+      "label": "Connection"
+    },
+    {
+      "id": "authentication",
+      "label": "Authentication"
     },
     {
       "id": "operation",
       "label": "Operation"
     },
     {
-      "id": "parameters",
-      "label": "Parameters"
+      "id": "input",
+      "label": "Input"
     },
     {
-      "id": "timeout",
-      "label": "Connection timeout"
-    },
-    {
-      "id": "payload",
-      "label": "Payload"
+      "id": "request",
+      "label": "Request (advanced)"
     },
     {
       "id": "output",
@@ -47,6 +53,10 @@
     {
       "id": "retries",
       "label": "Retries"
+    },
+    {
+      "id": "endpoint",
+      "label": "Endpoint (technical)"
     }
   ],
   "properties": [
@@ -60,48 +70,64 @@
     },
     {
       "id": "baseUrl",
-      "label": "Mistral Server",
-      "description": "URL of local Mistral server (with port eg. http://localhost:8000/) or Mistral-hosted API.",
-      "constraints": {
-        "notEmpty": true
-      },
-      "feel": "required",
-      "group": "server",
-      "placeholder": "https://api.mistral.ai/",
-      "binding": {
-        "name": "baseUrl",
-        "type": "zeebe:input"
-      },
-      "type": "Text"
-    },
-    {
-      "id": "authorization",
-      "label": "Bearer token",
-      "optional": false,
+      "label": "Base URL",
+      "value": "https://api.mistral.ai",
+      "description": "Change only for a dedicated / self-hosted Mistral deployment",
       "constraints": {
         "notEmpty": true
       },
       "feel": "optional",
-      "group": "server",
+      "group": "connection",
       "binding": {
-        "name": "authorization",
+        "name": "baseUrl",
         "type": "zeebe:input"
       },
-      "type": "String",
-      "placeholder": "7vgCG...5iA24bjj"
+      "type": "String"
     },
     {
-      "id": "apiVersion",
-      "value": "v1",
+      "id": "connectionTimeout",
+      "label": "Connection timeout (s)",
+      "value": "30",
+      "optional": true,
+      "feel": "optional",
+      "group": "connection",
       "binding": {
-        "name": "apiVersion",
+        "name": "connectionTimeoutInSeconds",
+        "type": "zeebe:input"
+      },
+      "type": "String"
+    },
+    {
+      "id": "authentication.type",
+      "value": "bearer",
+      "group": "authentication",
+      "binding": {
+        "name": "authentication.type",
         "type": "zeebe:input"
       },
       "type": "Hidden"
     },
     {
+      "id": "authentication.token",
+      "label": "Mistral API key",
+      "description": "Use a Camunda secret: <code>{{secrets.MISTRAL_API_KEY}}</code>. Get a key at <a href=\"https://console.mistral.ai/api-keys\" target=\"_blank\">console.mistral.ai</a>. Learn how to manage secrets in <a href=\"https://docs.camunda.io/docs/components/console/manage-clusters/manage-secrets/\" target=\"_blank\">the Camunda documentation</a>.",
+      "value": "{{secrets.MISTRAL_API_KEY}}",
+      "constraints": {
+        "notEmpty": true
+      },
+      "feel": "optional",
+      "group": "authentication",
+      "binding": {
+        "name": "authentication.token",
+        "type": "zeebe:input"
+      },
+      "type": "String"
+    },
+    {
       "id": "operationId",
-      "value": "operation__text_generation_simple",
+      "label": "Operation",
+      "description": "Pick what Mistral should do in this task",
+      "value": "chat_completion_v1_chat_completions_post",
       "group": "operation",
       "binding": {
         "name": "operationId",
@@ -110,160 +136,2241 @@
       "type": "Dropdown",
       "choices": [
         {
-          "name": "Text Generation (Simple)",
-          "value": "operation__text_generation_simple"
+          "name": "Chat: Ask Mistral (completion)",
+          "value": "chat_completion_v1_chat_completions_post"
         },
         {
-          "name": "Text Moderation",
-          "value": "operation__text_moderation"
+          "name": "Document AI: OCR a document",
+          "value": "ocr_v1_ocr_post"
         },
         {
-          "name": "Vision (Simple)",
-          "value": "operation__vision_simple"
+          "name": "Embeddings: Create embeddings",
+          "value": "embeddings_v1_embeddings_post"
+        },
+        {
+          "name": "Safety: Moderate content",
+          "value": "moderations_v1_moderations_post"
+        },
+        {
+          "name": "Classification: Classify text",
+          "value": "classifications_v1_classifications_post"
+        },
+        {
+          "name": "Agents: Create agent",
+          "value": "agents_api_v1_agents_create"
+        },
+        {
+          "name": "Agents: Get agent",
+          "value": "agents_api_v1_agents_get"
+        },
+        {
+          "name": "Agents: Update agent",
+          "value": "agents_api_v1_agents_update"
+        },
+        {
+          "name": "Agents: Delete agent",
+          "value": "agents_api_v1_agents_delete"
+        },
+        {
+          "name": "Conversations: Start conversation",
+          "value": "agents_api_v1_conversations_start"
+        },
+        {
+          "name": "Conversations: Append message",
+          "value": "agents_api_v1_conversations_append"
+        },
+        {
+          "name": "Conversations: Get conversation",
+          "value": "agents_api_v1_conversations_get"
+        },
+        {
+          "name": "Conversations: List messages",
+          "value": "agents_api_v1_conversations_messages"
+        },
+        {
+          "name": "Conversations: Restart from entry",
+          "value": "agents_api_v1_conversations_restart"
+        },
+        {
+          "name": "Files: List files",
+          "value": "files_api_routes_list_files"
+        },
+        {
+          "name": "Files: Get file details",
+          "value": "files_api_routes_retrieve_file"
+        },
+        {
+          "name": "Files: Get download URL",
+          "value": "files_api_routes_get_signed_url"
+        },
+        {
+          "name": "Models: List available models",
+          "value": "list_models_v1_models_get"
         }
       ]
     },
     {
-      "id": "mistralModelId",
-      "label": "Model",
-      "description": "ID of the model to use. See <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\">Model overview</a> for model descriptions",
-      "placeholder": "mistral-large-latest",
-      "group": "operation",
+      "id": "chat_completion_v1_chat_completions_post_$path",
+      "value": "=\"/v1/chat/completions\"",
+      "group": "endpoint",
       "binding": {
-        "name": "mistralModelId",
-        "type": "zeebe:input"
-      },
-      "type": "String"
-    },
-    {
-      "id": "messages",
-      "label": "Messages",
-      "description": "The prompt(s) to generate completions for.",
-      "group": "operation",
-      "binding": {
-        "name": "messages",
-        "type": "zeebe:input"
-      },
-      "type": "Text"
-    },
-    {
-      "id": "imageUrl",
-      "label": "Image URL",
-      "description": "Provide the URL of the image to process.",
-      "group": "operation",
-      "binding": {
-        "name": "imageUrl",
+        "name": "operationPath",
         "type": "zeebe:input"
       },
       "condition": {
         "property": "operationId",
-        "oneOf": [
-          "operation__vision_simple"
-        ],
+        "equals": "chat_completion_v1_chat_completions_post",
         "type": "simple"
       },
-      "type": "Text"
+      "type": "Hidden"
     },
     {
-      "id": "responseFormat",
-      "label": "Response Format",
-      "value": "text",
-      "group": "operation",
+      "id": "chat_completion_v1_chat_completions_post_$method",
+      "value": "POST",
+      "group": "endpoint",
       "binding": {
-        "name": "responseFormat",
+        "name": "method",
         "type": "zeebe:input"
       },
       "condition": {
         "property": "operationId",
-        "oneOf": [
-          "operation__text_generation_simple",
-          "operation__vision_simple"
-        ],
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "chat_completion_v1_chat_completions_post_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "chat_completion_v1_chat_completions_post_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "chatModel",
+      "group": "input",
+      "binding": {
+        "name": "chatModel",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
         "type": "simple"
       },
       "type": "Dropdown",
       "choices": [
         {
-          "name": "Text",
-          "value": "text"
+          "name": "Mistral Large (latest)",
+          "value": "mistral-large-latest"
         },
         {
-          "name": "JSON Oject",
-          "value": "json_object"
+          "name": "Mistral Medium (latest)",
+          "value": "mistral-medium-latest"
+        },
+        {
+          "name": "Mistral Small (latest)",
+          "value": "mistral-small-latest"
+        },
+        {
+          "name": "Ministral 8B",
+          "value": "ministral-8b-latest"
+        },
+        {
+          "name": "Ministral 3B",
+          "value": "ministral-3b-latest"
+        },
+        {
+          "name": "Pixtral Large (vision)",
+          "value": "pixtral-large-latest"
+        },
+        {
+          "name": "Codestral (code)",
+          "value": "codestral-latest"
+        },
+        {
+          "name": "Magistral (reasoning)",
+          "value": "magistral-medium-latest"
+        }
+      ],
+      "label": "Model",
+      "value": "mistral-small-latest",
+      "description": "Mistral model to use"
+    },
+    {
+      "id": "chatSystemPrompt",
+      "label": "System prompt",
+      "group": "input",
+      "binding": {
+        "name": "chatSystemPrompt",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "value": "You are a helpful assistant working inside a business process. Answer concisely.",
+      "description": "Defines the behavior and persona of the model.",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "chatUserPrompt",
+      "label": "User prompt",
+      "group": "input",
+      "binding": {
+        "name": "chatUserPrompt",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "description": "The user question or instruction. Prefix with = to inject a process variable, e.g. <code>= claimDescription</code>",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "chatTemperature",
+      "label": "Temperature",
+      "group": "input",
+      "binding": {
+        "name": "chatTemperature",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "value": "0.3",
+      "description": "0 = deterministic, 1 = creative",
+      "optional": true
+    },
+    {
+      "id": "chatMaxTokens",
+      "label": "Max tokens",
+      "group": "input",
+      "binding": {
+        "name": "chatMaxTokens",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "value": "1024",
+      "optional": true
+    },
+    {
+      "id": "chatBody",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "value": "={\"model\": chatModel, \"messages\": [{\"role\": \"system\", \"content\": chatSystemPrompt}, {\"role\": \"user\", \"content\": chatUserPrompt}], \"temperature\": number(chatTemperature), \"max_tokens\": number(chatMaxTokens)}",
+      "type": "String"
+    },
+    {
+      "id": "ocr_v1_ocr_post_$path",
+      "value": "=\"/v1/ocr\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "ocr_v1_ocr_post_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "ocr_v1_ocr_post_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "ocr_v1_ocr_post_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "ocrDocType",
+      "label": "Document type",
+      "value": "document_url",
+      "group": "input",
+      "binding": {
+        "name": "ocrDocType",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Document URL (PDF)",
+          "value": "document_url"
+        },
+        {
+          "name": "Image URL",
+          "value": "image_url"
         }
       ]
     },
     {
-      "id": "connectionTimeoutInSeconds",
-      "label": "Connection timeout in seconds",
-      "description": "Defines the connection timeout in seconds, or 0 for an infinite timeout",
-      "optional": false,
-      "value": "20",
-      "constraints": {
-        "notEmpty": true,
-        "pattern": {
-          "value": "^\\d+$",
-          "message": "Must be a number"
-        }
-      },
-      "feel": "optional",
-      "group": "timeout",
+      "id": "ocrDocumentUrl",
+      "label": "Document URL",
+      "group": "input",
       "binding": {
-        "name": "connectionTimeoutInSeconds",
+        "name": "ocrDocumentUrl",
         "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "description": "Public or signed URL of the document to process. Tip: combine with <i>Files: Get download URL</i>.",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "ocrBody",
+      "value": "={\"model\": \"mistral-ocr-latest\", \"document\": if ocrDocType = \"image_url\" then {\"type\": \"image_url\", \"image_url\": ocrDocumentUrl} else {\"type\": \"document_url\", \"document_url\": ocrDocumentUrl}, \"include_image_base64\": false}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
       },
       "type": "String"
     },
     {
-      "id": "readTimeoutInSeconds",
-      "label": "Read timeout in seconds",
-      "description": "Timeout in seconds to read data from an established connection or 0 for an infinite timeout",
-      "optional": false,
-      "value": "20",
-      "constraints": {
-        "notEmpty": true,
-        "pattern": {
-          "value": "^\\d+$",
-          "message": "Must be a number"
-        }
-      },
-      "feel": "optional",
-      "group": "timeout",
+      "id": "embeddings_v1_embeddings_post_$path",
+      "value": "=\"/v1/embeddings\"",
+      "group": "endpoint",
       "binding": {
-        "name": "readTimeoutInSeconds",
+        "name": "operationPath",
         "type": "zeebe:input"
       },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "embeddings_v1_embeddings_post_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "embeddings_v1_embeddings_post_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "embeddings_v1_embeddings_post_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "embeddingsInput",
+      "label": "Text to embed",
+      "group": "input",
+      "binding": {
+        "name": "embeddingsInput",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "description": "Text to convert into a vector embedding",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "embeddingsBody",
+      "value": "={\"model\": \"mistral-embed\", \"input\": [embeddingsInput]}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
       "type": "String"
+    },
+    {
+      "id": "moderations_v1_moderations_post_$path",
+      "value": "=\"/v1/moderations\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "moderations_v1_moderations_post_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "moderations_v1_moderations_post_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "moderations_v1_moderations_post_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "moderationInput",
+      "label": "Text to moderate",
+      "group": "input",
+      "binding": {
+        "name": "moderationInput",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "description": "Content to check for policy violations (PII, fraud, violence, ...)",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "moderationBody",
+      "value": "={\"model\": \"mistral-moderation-latest\", \"input\": [moderationInput]}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "classifications_v1_classifications_post_$path",
+      "value": "=\"/v1/classifications\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "classifications_v1_classifications_post_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "classifications_v1_classifications_post_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "classifications_v1_classifications_post_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "classificationModel",
+      "label": "Classifier model",
+      "group": "input",
+      "binding": {
+        "name": "classificationModel",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "value": "",
+      "description": "Your fine-tuned classifier model ID",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "classificationInput",
+      "label": "Text to classify",
+      "group": "input",
+      "binding": {
+        "name": "classificationInput",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "classificationBody",
+      "value": "={\"model\": classificationModel, \"input\": [classificationInput]}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "classifications_v1_classifications_post",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "agents_api_v1_agents_create_$path",
+      "value": "=\"/v1/agents\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_create_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_create_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_create_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agentCreateName",
+      "label": "Agent name",
+      "group": "input",
+      "binding": {
+        "name": "agentCreateName",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agentCreateModel",
+      "group": "input",
+      "binding": {
+        "name": "agentCreateModel",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Mistral Large (latest)",
+          "value": "mistral-large-latest"
+        },
+        {
+          "name": "Mistral Medium (latest)",
+          "value": "mistral-medium-latest"
+        },
+        {
+          "name": "Mistral Small (latest)",
+          "value": "mistral-small-latest"
+        },
+        {
+          "name": "Ministral 8B",
+          "value": "ministral-8b-latest"
+        },
+        {
+          "name": "Ministral 3B",
+          "value": "ministral-3b-latest"
+        },
+        {
+          "name": "Pixtral Large (vision)",
+          "value": "pixtral-large-latest"
+        },
+        {
+          "name": "Codestral (code)",
+          "value": "codestral-latest"
+        },
+        {
+          "name": "Magistral (reasoning)",
+          "value": "magistral-medium-latest"
+        }
+      ],
+      "label": "Model",
+      "value": "mistral-small-latest"
+    },
+    {
+      "id": "agentCreateInstructions",
+      "label": "Instructions",
+      "group": "input",
+      "binding": {
+        "name": "agentCreateInstructions",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "description": "System instructions defining the agent's role",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agentCreateBody",
+      "value": "={\"name\": agentCreateName, \"model\": agentCreateModel, \"instructions\": agentCreateInstructions}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_create",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "agents_api_v1_agents_get_$path",
+      "value": "=\"/v1/agents/\"+agent_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_get_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_get_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_get_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_get_agent_id",
+      "label": "Agent ID",
+      "group": "input",
+      "binding": {
+        "name": "agent_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_get",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "description": "ID of the agent, e.g. <code>ag_...</code>",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agents_api_v1_agents_update_$path",
+      "value": "=\"/v1/agents/\"+agent_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_update_$method",
+      "value": "PATCH",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_update_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_update_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_update_agent_id",
+      "label": "Agent ID",
+      "group": "input",
+      "binding": {
+        "name": "agent_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "description": "ID of the agent, e.g. <code>ag_...</code>",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agents_api_v1_agents_delete_$path",
+      "value": "=\"/v1/agents/\"+agent_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_delete",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_delete_$method",
+      "value": "DELETE",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_delete",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_delete_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_delete",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_delete_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_delete",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_agents_delete_agent_id",
+      "label": "Agent ID",
+      "group": "input",
+      "binding": {
+        "name": "agent_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_delete",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "description": "ID of the agent, e.g. <code>ag_...</code>",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agentUpdateBody",
+      "value": "={\n  \"instructions\": \"New instructions for the agent\"\n}",
+      "feel": "required",
+      "group": "request",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_agents_update",
+        "type": "simple"
+      },
+      "type": "Text",
+      "label": "Fields to update (JSON)",
+      "description": "Only include the fields you want to change"
+    },
+    {
+      "id": "agents_api_v1_conversations_start_$path",
+      "value": "=\"/v1/conversations\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_start_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_start_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_start_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "convStartMode",
+      "label": "Run with",
+      "value": "agent",
+      "group": "input",
+      "binding": {
+        "name": "convStartMode",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "An existing agent",
+          "value": "agent"
+        },
+        {
+          "name": "A model directly",
+          "value": "model"
+        }
+      ]
+    },
+    {
+      "id": "convStartAgentId",
+      "label": "Agent ID",
+      "group": "input",
+      "binding": {
+        "name": "convStartAgentId",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "allMatch": [
+          {
+            "property": "operationId",
+            "equals": "agents_api_v1_conversations_start",
+            "type": "simple"
+          },
+          {
+            "property": "convStartMode",
+            "equals": "agent",
+            "type": "simple"
+          }
+        ]
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convStartModel",
+      "group": "input",
+      "binding": {
+        "name": "convStartModel",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "allMatch": [
+          {
+            "property": "operationId",
+            "equals": "agents_api_v1_conversations_start",
+            "type": "simple"
+          },
+          {
+            "property": "convStartMode",
+            "equals": "model",
+            "type": "simple"
+          }
+        ]
+      },
+      "type": "Dropdown",
+      "choices": [
+        {
+          "name": "Mistral Large (latest)",
+          "value": "mistral-large-latest"
+        },
+        {
+          "name": "Mistral Medium (latest)",
+          "value": "mistral-medium-latest"
+        },
+        {
+          "name": "Mistral Small (latest)",
+          "value": "mistral-small-latest"
+        },
+        {
+          "name": "Ministral 8B",
+          "value": "ministral-8b-latest"
+        },
+        {
+          "name": "Ministral 3B",
+          "value": "ministral-3b-latest"
+        },
+        {
+          "name": "Pixtral Large (vision)",
+          "value": "pixtral-large-latest"
+        },
+        {
+          "name": "Codestral (code)",
+          "value": "codestral-latest"
+        },
+        {
+          "name": "Magistral (reasoning)",
+          "value": "magistral-medium-latest"
+        }
+      ],
+      "label": "Model",
+      "value": "mistral-small-latest"
+    },
+    {
+      "id": "convStartInstructions",
+      "label": "Instructions",
+      "group": "input",
+      "binding": {
+        "name": "convStartInstructions",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "allMatch": [
+          {
+            "property": "operationId",
+            "equals": "agents_api_v1_conversations_start",
+            "type": "simple"
+          },
+          {
+            "property": "convStartMode",
+            "equals": "model",
+            "type": "simple"
+          }
+        ]
+      },
+      "type": "Text",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convStartInputs",
+      "label": "Message",
+      "group": "input",
+      "binding": {
+        "name": "convStartInputs",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_start",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "description": "First user message of the conversation",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convStartBodyAgent",
+      "value": "={\"agent_id\": convStartAgentId, \"inputs\": convStartInputs}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "allMatch": [
+          {
+            "property": "operationId",
+            "equals": "agents_api_v1_conversations_start",
+            "type": "simple"
+          },
+          {
+            "property": "convStartMode",
+            "equals": "agent",
+            "type": "simple"
+          }
+        ]
+      },
+      "type": "String"
+    },
+    {
+      "id": "convStartBodyModel",
+      "value": "={\"model\": convStartModel, \"instructions\": convStartInstructions, \"inputs\": convStartInputs}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "allMatch": [
+          {
+            "property": "operationId",
+            "equals": "agents_api_v1_conversations_start",
+            "type": "simple"
+          },
+          {
+            "property": "convStartMode",
+            "equals": "model",
+            "type": "simple"
+          }
+        ]
+      },
+      "type": "String"
+    },
+    {
+      "id": "agents_api_v1_conversations_append_$path",
+      "value": "=\"/v1/conversations/\"+conversation_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_append_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_append_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_append_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_append_cid",
+      "label": "Conversation ID",
+      "group": "input",
+      "binding": {
+        "name": "conversation_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convAppendInputs",
+      "label": "Message",
+      "group": "input",
+      "binding": {
+        "name": "convAppendInputs",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convAppendBody",
+      "value": "={\"inputs\": convAppendInputs}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_append",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "agents_api_v1_conversations_get_$path",
+      "value": "=\"/v1/conversations/\"+conversation_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_get_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_get_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_get_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_get_cid",
+      "label": "Conversation ID",
+      "group": "input",
+      "binding": {
+        "name": "conversation_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_get",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agents_api_v1_conversations_messages_$path",
+      "value": "=\"/v1/conversations/\"+conversation_id+\"/messages\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_messages",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_messages_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_messages",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_messages_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_messages",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_messages_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_messages",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_messages_cid",
+      "label": "Conversation ID",
+      "group": "input",
+      "binding": {
+        "name": "conversation_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_messages",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "agents_api_v1_conversations_restart_$path",
+      "value": "=\"/v1/conversations/\"+conversation_id+\"/restart\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_restart_$method",
+      "value": "POST",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_restart_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_restart_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "agents_api_v1_conversations_restart_cid",
+      "label": "Conversation ID",
+      "group": "input",
+      "binding": {
+        "name": "conversation_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convRestartFrom",
+      "label": "From entry ID",
+      "group": "input",
+      "binding": {
+        "name": "convRestartFrom",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "description": "Entry to restart the conversation from",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convRestartInputs",
+      "label": "Message",
+      "group": "input",
+      "binding": {
+        "name": "convRestartInputs",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "Text",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "convRestartBody",
+      "value": "={\"inputs\": convRestartInputs, \"from_entry_id\": convRestartFrom}",
+      "feel": "required",
+      "group": "endpoint",
+      "binding": {
+        "name": "body",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "agents_api_v1_conversations_restart",
+        "type": "simple"
+      },
+      "type": "String"
+    },
+    {
+      "id": "files_api_routes_list_files_$path",
+      "value": "=\"/v1/files\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_list_files",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_list_files_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_list_files",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_list_files_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_list_files",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_list_files_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_list_files",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_retrieve_file_$path",
+      "value": "=\"/v1/files/\"+file_id",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_retrieve_file",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_retrieve_file_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_retrieve_file",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_retrieve_file_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_retrieve_file",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_retrieve_file_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_retrieve_file",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_retrieve_file_fid",
+      "label": "File ID",
+      "group": "input",
+      "binding": {
+        "name": "file_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_retrieve_file",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "files_api_routes_get_signed_url_$path",
+      "value": "=\"/v1/files/\"+file_id+\"/url\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_get_signed_url",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_get_signed_url_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_get_signed_url",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_get_signed_url_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_get_signed_url",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_get_signed_url_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_get_signed_url",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "files_api_routes_get_signed_url_fid",
+      "label": "File ID",
+      "group": "input",
+      "binding": {
+        "name": "file_id",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "files_api_routes_get_signed_url",
+        "type": "simple"
+      },
+      "type": "String",
+      "feel": "optional",
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "list_models_v1_models_get_$path",
+      "value": "=\"/v1/models\"",
+      "group": "endpoint",
+      "binding": {
+        "name": "operationPath",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "list_models_v1_models_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "list_models_v1_models_get_$method",
+      "value": "GET",
+      "group": "endpoint",
+      "binding": {
+        "name": "method",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "list_models_v1_models_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "list_models_v1_models_get_$headers",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "headers",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "list_models_v1_models_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "list_models_v1_models_get_$query",
+      "value": "={}",
+      "group": "endpoint",
+      "binding": {
+        "name": "queryParameters",
+        "type": "zeebe:input"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "list_models_v1_models_get",
+        "type": "simple"
+      },
+      "type": "Hidden"
+    },
+    {
+      "id": "url",
+      "value": "= baseUrl + operationPath",
+      "group": "endpoint",
+      "binding": {
+        "name": "url",
+        "type": "zeebe:input"
+      },
+      "type": "Hidden"
     },
     {
       "id": "resultVariable",
       "label": "Result variable",
-      "description": "Name of variable to store the response in",
+      "description": "Name of a single variable to store the full response in",
       "group": "output",
       "binding": {
         "key": "resultVariable",
         "type": "zeebe:taskHeader"
       },
-      "type": "String",
-      "value": "fullMistralResult"
+      "type": "String"
     },
     {
-      "id": "resultExpression",
+      "id": "resultExprChat",
       "label": "Result expression",
-      "description": "Expression to map the response into process variables",
+      "description": "Maps the model's answer to <code>mistralReply</code>. Adjust as needed.",
+      "value": "={mistralReply: response.body.choices[1].message.content, mistralUsage: response.body.usage}",
       "feel": "required",
       "group": "output",
       "binding": {
         "key": "resultExpression",
         "type": "zeebe:taskHeader"
       },
-      "value": "{mistralResponse: response.body.choices[1].message.content}",
+      "condition": {
+        "property": "operationId",
+        "equals": "chat_completion_v1_chat_completions_post",
+        "type": "simple"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "resultExprOcr",
+      "label": "Result expression",
+      "description": "Maps extracted pages and concatenated markdown text.",
+      "value": "={ocrPages: response.body.pages, ocrText: string join(for p in response.body.pages return p.markdown, \"\\n\")}",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "ocr_v1_ocr_post",
+        "type": "simple"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "resultExprEmb",
+      "label": "Result expression",
+      "description": "Maps the embedding vector.",
+      "value": "={embedding: response.body.data[1].embedding}",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "embeddings_v1_embeddings_post",
+        "type": "simple"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "resultExprMod",
+      "label": "Result expression",
+      "description": "Maps moderation categories and scores.",
+      "value": "={moderation: response.body.results[1]}",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "condition": {
+        "property": "operationId",
+        "equals": "moderations_v1_moderations_post",
+        "type": "simple"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "resultExprConv",
+      "label": "Result expression",
+      "description": "Maps the conversation ID (reuse it to append) and agent outputs.",
+      "value": "={conversationId: response.body.conversation_id, agentOutputs: response.body.outputs}",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "agents_api_v1_conversations_start",
+          "agents_api_v1_conversations_append",
+          "agents_api_v1_conversations_restart"
+        ],
+        "type": "simple"
+      },
+      "type": "Text"
+    },
+    {
+      "id": "resultExprGeneric",
+      "label": "Result expression",
+      "description": "Maps the full response body to <code>mistralResult</code>.",
+      "value": "={mistralResult: response.body}",
+      "feel": "required",
+      "group": "output",
+      "binding": {
+        "key": "resultExpression",
+        "type": "zeebe:taskHeader"
+      },
+      "condition": {
+        "property": "operationId",
+        "oneOf": [
+          "classifications_v1_classifications_post",
+          "agents_api_v1_agents_create",
+          "agents_api_v1_agents_get",
+          "agents_api_v1_agents_update",
+          "agents_api_v1_agents_delete",
+          "agents_api_v1_conversations_get",
+          "agents_api_v1_conversations_messages",
+          "files_api_routes_list_files",
+          "files_api_routes_retrieve_file",
+          "files_api_routes_get_signed_url",
+          "list_models_v1_models_get"
+        ],
+        "type": "simple"
+      },
       "type": "Text"
     },
     {
       "id": "errorExpression",
       "label": "Error expression",
-      "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+      "description": "Map HTTP errors to BPMN errors, e.g. <code>if error.code = \"429\" then bpmnError(\"RATE_LIMIT\", \"Mistral rate limit hit\") else null</code>. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
       "feel": "required",
       "group": "error",
       "binding": {
@@ -288,128 +2395,14 @@
     {
       "id": "retryBackoff",
       "label": "Retry backoff",
-      "description": "ISO-8601 duration to wait between retries",
-      "value": "PT0S",
-      "feel": "optional",
+      "description": "ISO-8601 duration to wait between retries, e.g. PT5S",
+      "value": "PT5S",
       "group": "retries",
       "binding": {
         "key": "retryBackoff",
         "type": "zeebe:taskHeader"
       },
       "type": "String"
-    },
-    {
-      "id": "operation__text_generation__endpoint",
-      "value": "=\"/chat/completions\"",
-      "group": "parameters",
-      "binding": {
-        "name": "operationEndpoint",
-        "type": "zeebe:input"
-      },
-      "condition": {
-        "property": "operationId",
-        "oneOf": [
-          "operation__text_generation_simple",
-          "operation__vision_simple"
-        ],
-        "type": "simple"
-      },
-      "type": "Hidden"
-    },
-    {
-      "id": "operation__text_moderation__endpoint",
-      "value": "=\"/moderations\"",
-      "group": "parameters",
-      "binding": {
-        "name": "operationEndpoint",
-        "type": "zeebe:input"
-      },
-      "condition": {
-        "property": "operationId",
-        "oneOf": [
-          "operation__moderation_simple"
-        ],
-        "type": "simple"
-      },
-      "type": "Hidden"
-    },
-    {
-      "id": "body",
-      "binding": {
-        "name": "body",
-        "type": "zeebe:input"
-      },
-      "condition": {
-        "property": "operationId",
-        "oneOf": [
-          "operation__text_generation_simple"
-        ],
-        "type": "simple"
-      },
-      "type": "Hidden",
-      "value": "={model: mistralModelId, messages: [{role: \"user\", content: messages}], response_format: {type: responseFormat}}"
-    },
-    {
-      "id": "body",
-      "binding": {
-        "name": "body",
-        "type": "zeebe:input"
-      },
-      "condition": {
-        "property": "operationId",
-        "oneOf": [
-          "operation__text_moderation"
-        ],
-        "type": "simple"
-      },
-      "type": "Hidden",
-      "value": "={model: mistralModelId, input: [messages]}"
-    },
-    {
-      "id": "body",
-      "binding": {
-        "name": "body",
-        "type": "zeebe:input"
-      },
-      "condition": {
-        "property": "operationId",
-        "oneOf": [
-          "operation__vision_simple"
-        ],
-        "type": "simple"
-      },
-      "type": "Hidden",
-      "value": "={\n    \"model\": mistralModelId,\n    \"messages\": [\n      {\n        \"role\": \"user\",\n        \"content\": [\n          {\n            \"type\": \"text\",\n            \"text\": messages\n          },\n          {\n            \"type\": \"image_url\",\n            \"image_url\": imageUrl\n          }\n        ]\n      }\n    ],\n     \"response_format\": {\"type\": responseFormat},\n    \"max_tokens\": 300\n  }"
-    },
-    {
-      "id": "method",
-      "value": "POST",
-      "binding": {
-        "name": "method",
-        "type": "zeebe:input"
-      },
-      "type": "Hidden"
-    },
-    {
-      "id": "operation__text_generation__headers",
-      "value": "={Authorization: \"Bearer \" + authorization, Accept: \"application/json\", Content-Type: \"application/json\"}",
-      "binding": {
-        "name": "headers",
-        "type": "zeebe:input"
-      },
-      "type": "Hidden"
-    },
-    {
-      "id": "url",
-      "binding": {
-        "name": "url",
-        "type": "zeebe:input"
-      },
-      "type": "Hidden",
-      "value": "= baseUrl + apiVersion + operationEndpoint"
     }
-  ],
-  "icon": {
-    "contents": "data:image/png;base64,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"
-  }
+  ]
 }
