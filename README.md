@@ -1,6 +1,6 @@
 # Mistral AI Connector for Camunda 8
 
-A curated [Element Template](https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/about-templates/) that brings **Mistral AI** into your Camunda 8 processes, chat completions, document OCR, embeddings, content moderation, classification, agents and conversations.
+A curated [Element Template](https://docs.camunda.io/docs/components/modeler/desktop-modeler/element-templates/about-templates/) that brings **Mistral AI** into your Camunda 8 processes, chat completions, document OCR, embeddings, content moderation, classification, agents, conversations and workflows.
 
 Built on top of the native `io.camunda:http-json:1` connector. No custom runtime needed.
 
@@ -12,11 +12,12 @@ Built on top of the native `io.camunda:http-json:1` connector. No custom runtime
 
 ## Features
 
-- **18 operations** across 6 API domains, with human-readable labels
+- **25 operations** across 7 API domains, with human-readable labels
 - Guided input fields for Chat completion: model picker, system prompt, user prompt, temperature, max tokens
+- **Mistral Workflows** support: trigger, monitor, signal, query, cancel and terminate durable workflow executions from BPMN
 - Pre-filled result expressions per operation so process variables are ready to use immediately
 - `mistralUsage` automatically captured: prompt, completion and total tokens exposed as process variables
-- Mistral API key stored as a Camunda secret(never hardcoded)
+- Mistral API key stored as a Camunda secret (never hardcoded)
 - Compatible with Camunda 8 SaaS and Self-Managed (8.5+)
 
 ------
@@ -118,26 +119,67 @@ See the [Camunda secrets documentation](https://docs.camunda.io/docs/components/
 
 ## API Coverage
 
-| Operation label                   | Method   | Endpoint                                       | Mistral API reference                                        |
-| --------------------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------ |
-| Chat: Ask Mistral (completion)    | `POST`   | `/v1/chat/completions`                         | [Chat](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post) |
-| Document AI: OCR a document       | `POST`   | `/v1/ocr`                                      | [OCR](https://docs.mistral.ai/api/#tag/ocr/operation/ocr_v1_ocr_post) |
-| Embeddings: Create embeddings     | `POST`   | `/v1/embeddings`                               | [Embeddings](https://docs.mistral.ai/api/#tag/embeddings/operation/embeddings_v1_embeddings_post) |
-| Safety: Moderate content          | `POST`   | `/v1/moderations`                              | [Moderation](https://docs.mistral.ai/api/#tag/moderation/operation/moderations_v1_moderations_post) |
-| Classification: Classify text     | `POST`   | `/v1/classifications`                          | [Classification](https://docs.mistral.ai/api/#tag/classifiers/operation/classifications_v1_classifications_post) |
-| Agents: Create agent              | `POST`   | `/v1/agents`                                   | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_create) |
-| Agents: Get agent                 | `GET`    | `/v1/agents/{agent_id}`                        | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_get) |
-| Agents: Update agent              | `PATCH`  | `/v1/agents/{agent_id}`                        | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_update) |
-| Agents: Delete agent              | `DELETE` | `/v1/agents/{agent_id}`                        | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_delete) |
-| Conversations: Start conversation | `POST`   | `/v1/conversations`                            | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_start) |
-| Conversations: Append message     | `POST`   | `/v1/conversations/{conversation_id}`          | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_append) |
-| Conversations: Get conversation   | `GET`    | `/v1/conversations/{conversation_id}`          | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_get) |
-| Conversations: List messages      | `GET`    | `/v1/conversations/{conversation_id}/messages` | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_messages) |
-| Conversations: Restart from entry | `POST`   | `/v1/conversations/{conversation_id}/restart`  | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_restart) |
-| Files: List files                 | `GET`    | `/v1/files`                                    | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_list_files) |
-| Files: Get file details           | `GET`    | `/v1/files/{file_id}`                          | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_retrieve_file) |
-| Files: Get download URL           | `GET`    | `/v1/files/{file_id}/url`                      | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_get_signed_url) |
-| Models: List available models     | `GET`    | `/v1/models`                                   | [Models](https://docs.mistral.ai/api/#tag/models/operation/list_models_v1_models_get) |
+| Operation label                        | Method   | Endpoint                                            | Mistral API reference                                        |
+| -------------------------------------- | -------- | --------------------------------------------------- | ------------------------------------------------------------ |
+| Chat: Ask Mistral (completion)         | `POST`   | `/v1/chat/completions`                              | [Chat](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post) |
+| Document AI: OCR a document            | `POST`   | `/v1/ocr`                                           | [OCR](https://docs.mistral.ai/api/#tag/ocr/operation/ocr_v1_ocr_post) |
+| Embeddings: Create embeddings          | `POST`   | `/v1/embeddings`                                    | [Embeddings](https://docs.mistral.ai/api/#tag/embeddings/operation/embeddings_v1_embeddings_post) |
+| Safety: Moderate content               | `POST`   | `/v1/moderations`                                   | [Moderation](https://docs.mistral.ai/api/#tag/moderation/operation/moderations_v1_moderations_post) |
+| Classification: Classify text          | `POST`   | `/v1/classifications`                               | [Classification](https://docs.mistral.ai/api/#tag/classifiers/operation/classifications_v1_classifications_post) |
+| Agents: Create agent                   | `POST`   | `/v1/agents`                                        | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_create) |
+| Agents: Get agent                      | `GET`    | `/v1/agents/{agent_id}`                             | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_get) |
+| Agents: Update agent                   | `PATCH`  | `/v1/agents/{agent_id}`                             | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_update) |
+| Agents: Delete agent                   | `DELETE` | `/v1/agents/{agent_id}`                             | [Agents](https://docs.mistral.ai/api/#tag/agents/operation/agents_api_v1_agents_delete) |
+| Conversations: Start conversation      | `POST`   | `/v1/conversations`                                 | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_start) |
+| Conversations: Append message          | `POST`   | `/v1/conversations/{conversation_id}`               | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_append) |
+| Conversations: Get conversation        | `GET`    | `/v1/conversations/{conversation_id}`               | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_get) |
+| Conversations: List messages           | `GET`    | `/v1/conversations/{conversation_id}/messages`      | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_messages) |
+| Conversations: Restart from entry      | `POST`   | `/v1/conversations/{conversation_id}/restart`       | [Conversations](https://docs.mistral.ai/api/#tag/conversations/operation/agents_api_v1_conversations_restart) |
+| Files: List files                      | `GET`    | `/v1/files`                                         | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_list_files) |
+| Files: Get file details                | `GET`    | `/v1/files/{file_id}`                               | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_retrieve_file) |
+| Files: Get download URL                | `GET`    | `/v1/files/{file_id}/url`                           | [Files](https://docs.mistral.ai/api/#tag/files/operation/files_api_routes_get_signed_url) |
+| Models: List available models          | `GET`    | `/v1/models`                                        | [Models](https://docs.mistral.ai/api/#tag/models/operation/list_models_v1_models_get) |
+| Workflows: Execute workflow            | `POST`   | `/v1/workflows/{workflow_identifier}/execute`       | [Workflows](https://docs.mistral.ai/api/endpoint/beta/workflows) |
+| Workflows: Get execution status/result | `GET`    | `/v1/workflows/executions/{execution_id}`           | [Workflows Executions](https://docs.mistral.ai/api/endpoint/beta/workflows/executions) |
+| Workflows: Send signal to execution    | `POST`   | `/v1/workflows/executions/{execution_id}/signals`   | [Workflows Executions](https://docs.mistral.ai/api/endpoint/beta/workflows/executions) |
+| Workflows: Query execution             | `POST`   | `/v1/workflows/executions/{execution_id}/queries`   | [Workflows Executions](https://docs.mistral.ai/api/endpoint/beta/workflows/executions) |
+| Workflows: Cancel execution            | `POST`   | `/v1/workflows/executions/{execution_id}/cancel`    | [Workflows Executions](https://docs.mistral.ai/api/endpoint/beta/workflows/executions) |
+| Workflows: Terminate execution         | `POST`   | `/v1/workflows/executions/{execution_id}/terminate` | [Workflows Executions](https://docs.mistral.ai/api/endpoint/beta/workflows/executions) |
+| Workflows: List registrations          | `GET`    | `/v1/workflows/registrations`                       | [Workflows](https://docs.mistral.ai/api/endpoint/beta/workflows) |
+
+------
+
+## Mistral Workflows
+
+[Mistral Workflows](https://docs.mistral.ai/studio-api/workflows/getting-started/overview) (public preview) is Mistral's durable execution layer for multi-step AI pipelines: LLM chains, human-in-the-loop approvals, scheduled tasks and multi-agent orchestration, powered by Temporal.
+
+The connector lets a Camunda process act as the **business orchestrator on top of Mistral's AI orchestrator**:
+
+- **Execute workflow** triggers a registered workflow by name with a JSON input matching its signature
+- **Get execution status/result** polls the execution (`RUNNING`, `COMPLETED`, `FAILED`, `CANCELED`, `TERMINATED`, `TIMED_OUT`, …) and retrieves its result once available
+- **Send signal** delivers a signal (e.g. a human approval decided in a Camunda User Task) to a workflow paused on `wait_for_input()`
+- **Query execution** reads live state from a running workflow without interrupting it
+- **Cancel / Terminate** stops an execution gracefully or immediately
+- **List registrations** enumerates the workflows registered in your workspace
+
+### Recommended BPMN pattern
+
+`Execute workflow` is **asynchronous**: it returns an `execution_id` immediately while the workflow may run for minutes, hours or days. The typical pattern is:
+
+```
+[Execute workflow] → (timer, e.g. PT30S) → [Get execution] → gateway on status
+                              ↑                                    |
+                              └──────────── RUNNING ───────────────┘
+                                          COMPLETED → continue with result
+                                          FAILED / TIMED_OUT → error handling
+```
+
+For human approvals, pair a Camunda **User Task** with `Send signal`: the reviewer decides in Tasklist, and the signal resumes the paused Mistral workflow.
+
+### Prerequisites
+
+- Workflows must be registered in your Mistral workspace and a **worker must be running** in your environment — the API orchestrates executions, but your workflow code runs on your own workers (see [Mistral's hybrid deployment model](https://docs.mistral.ai/studio-api/workflows/getting-started/overview))
+- The Workflows API is in **public preview**: Mistral does not plan breaking changes, but they remain possible
 
 ------
 
@@ -172,6 +214,21 @@ Each operation ships with a pre-filled result expression. Examples:
 }
 ```
 
+**Workflows (generic mapping)**
+
+```feel
+= { mistralResult: response.body }
+```
+
+For `Get execution`, useful fields include `response.body.status` and `response.body.result`, e.g.:
+
+```feel
+= {
+  wfStatus: response.body.status,
+  wfResult: response.body.result
+}
+```
+
 Adjust the expressions in the **Output mapping** section of the connector to fit your process variables.
 
 ------
@@ -194,8 +251,16 @@ Adjust the expressions in the **Output mapping** section of the connector to fit
 ## Known limitations
 
 - **File upload** (`POST /v1/files`) is not included — the `http-json` connector does not support `multipart/form-data`
-- **Streaming** operations are not included — streaming responses are not compatible with synchronous job workers
-- Fine-tuning, batch, workflows and observability endpoints are intentionally excluded to keep the template focused on process automation use cases
+- **Streaming** operations are not included — streaming responses (including the Workflows SSE event streams) are not compatible with synchronous job workers
+- **Workflows** requires your own workers to be running: the connector triggers and controls executions, but does not host workflow code
+- Fine-tuning, batch, workflow schedules/deployments/metrics and observability endpoints are intentionally excluded to keep the template focused on process automation use cases
+
+------
+
+## Changelog
+
+- **v3** — Added Mistral Workflows support (7 operations: execute, get execution, signal, query, cancel, terminate, list registrations); fixed deprecated `optional` + `zeebe:input` combination for Camunda 8.8+
+- **v2** — Initial public version: 18 operations across 6 API domains
 
 ------
 
