@@ -66,7 +66,7 @@ Because these values live as **process variables in Camunda**, [Optimize](https:
 
 <!-- Replace with your actual Optimize screenshot -->
 
-![Token monitoring in Camunda Optimize](https://claude.ai/chat/assets/screenshot-optimize.png)
+![Token monitoring in Camunda Optimize](agentic-metrics.png)
 
 This is one of the concrete advantages of running AI inside Camunda rather than as a standalone service: **observability comes for free**, with the same tooling you already use for your business processes.
 
